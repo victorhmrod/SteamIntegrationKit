@@ -443,7 +443,7 @@ FString USIK_FriendsLibrary::GetPersonaName()
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetPersonaName();
+		return UTF8_TO_TCHAR(SteamFriends()->GetPersonaName());
 	}
 	return FString();
 }
@@ -461,7 +461,7 @@ FString USIK_FriendsLibrary::GetPlayerNickname(FSIK_SteamId SteamIdPlayer)
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetPlayerNickname(SteamIdPlayer.GetSteamID());
+		return UTF8_TO_TCHAR(SteamFriends()->GetPlayerNickname(SteamIdPlayer.GetSteamID()));
 	}
 	return FString();
 }
@@ -651,3 +651,62 @@ void USIK_FriendsLibrary::SetListenForFriendMessage(bool bInterceptEnabled)
 	}
 }
 
+void USIK_FriendsLibrary::SetPlayedWith(FSIK_SteamId SteamIdUser)
+{
+	if(SteamFriends() != nullptr)
+	{
+		CSteamID SteamId = SteamIdUser.GetSteamID();
+		SteamFriends()->SetPlayedWith(SteamId);
+	}
+}
+
+bool USIK_FriendsLibrary::SetRichPresence(const FString& Key, const FString& Value)
+{
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->SetRichPresence(TCHAR_TO_ANSI(*Key), TCHAR_TO_ANSI(*Value));
+	}
+	return false;
+}
+
+bool USIK_FriendsLibrary::BHasEquippedProfileItem(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType)
+{
+#if WITH_ENGINE_STEAM
+	return false;
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->BHasEquippedProfileItem(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()));
+	}
+	return false;
+#endif
+}
+
+FString USIK_FriendsLibrary::GetProfileItemPropertyString(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
+{
+#if WITH_ENGINE_STEAM
+	return FString();
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->GetProfileItemPropertyString(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()), static_cast<ECommunityProfileItemProperty>(Property.GetValue()));
+	}
+	return FString();
+#endif
+}
+
+int32 USIK_FriendsLibrary::GetProfileItemPropertyUint(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
+{
+#if WITH_ENGINE_STEAM
+	return -1;
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->GetProfileItemPropertyUint(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()), static_cast<ECommunityProfileItemProperty>(Property.GetValue()));
+	}
+	return -1;
+#endif
+}

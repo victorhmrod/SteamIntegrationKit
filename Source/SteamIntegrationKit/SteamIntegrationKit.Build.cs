@@ -9,6 +9,7 @@ public class SteamIntegrationKit : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
+		//Always change this to true if you want to use the engine steam subsystem which you would need normally for using the Github version of the plugin
 		bool bUseEngineSteam = true;
 		
 		PublicIncludePaths.AddRange(
@@ -29,7 +30,6 @@ public class SteamIntegrationKit : ModuleRules
 			{
 				"Core",
 				"OnlineSubsystem",
-				"OnlineSubsystemSteam",
 				"OnlineSubsystemUtils",
 				"Networking"
 				// ... add other public dependencies that you statically link with here ...
@@ -48,7 +48,8 @@ public class SteamIntegrationKit : ModuleRules
 				"Projects",
 				"HTTP",
 				"Json",
-				"JsonUtilities"
+				"JsonUtilities",
+				"OnlineSubsystemSteam",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
@@ -68,10 +69,21 @@ public class SteamIntegrationKit : ModuleRules
 		{
 			PublicDefinitions.Add("WITH_ENGINE_STEAM=1");
 			PublicDefinitions.Add("WITH_STEAMKIT=1");
-			AddEngineThirdPartyPrivateStaticDependencies(Target, "Steamworks");
+			if (Target.Platform == UnrealTargetPlatform.Win64 || Target.Platform == UnrealTargetPlatform.Linux || Target.Platform == UnrealTargetPlatform.Mac)
+			{
+				Console.WriteLine("SteamIntegrationKit: Game build, enabling ONLINESUBSYSTEMSTEAM_PACKAGE");
+				PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=1");
+				AddEngineThirdPartyPrivateStaticDependencies(Target, "Steamworks");
+			}
+			else
+			{
+				Console.WriteLine("SteamIntegrationKit: Editor build, disabling ONLINESUBSYSTEMSTEAM_PACKAGE");
+				PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=0");
+			}
 		}
 		else
 		{
+			PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=1");
 			PublicDefinitions.Add("WITH_ENGINE_STEAM=0");
 			PublicDependencyModuleNames.Add("SteamSdk");
 		}

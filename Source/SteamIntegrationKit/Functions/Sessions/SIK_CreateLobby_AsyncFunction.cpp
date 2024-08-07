@@ -23,16 +23,12 @@ void USIK_CreateLobby_AsyncFunction::CreateLobby()
 			SessionCreationInfo.NumPublicConnections = NumberOfPublicConnections;
 			SessionCreationInfo.NumPrivateConnections = Var_CreateLobbySettings.NumberOfPrivateConnections;
 			SessionCreationInfo.bUseLobbiesIfAvailable = true;
-			SessionCreationInfo.bUseLobbiesVoiceChatIfAvailable = Var_CreateLobbySettings.bUseVoiceChat;
 			SessionCreationInfo.bUsesPresence = Var_CreateLobbySettings.bUsePresence;
 			SessionCreationInfo.bAllowJoinViaPresence = Var_CreateLobbySettings.bUsePresence;
 			SessionCreationInfo.bAllowJoinViaPresenceFriendsOnly = false;
 			SessionCreationInfo.bShouldAdvertise = Var_CreateLobbySettings.bShouldAdvertise;
 			SessionCreationInfo.bAllowJoinInProgress = Var_CreateLobbySettings.bAllowJoinInProgress;
-			SessionCreationInfo.SessionIdOverride = Var_CreateLobbySettings.LobbyIDOverride;
-			SessionCreationInfo.Set(SETTING_HOST_MIGRATION, Var_CreateLobbySettings.bSupportHostMigration, EOnlineDataAdvertisementType::ViaOnlineService);
-			//SessionCreationInfo.Set(SEARCH_KEYWORDS, VSessionName, EOnlineDataAdvertisementType::ViaOnlineService);
-			for (auto& Settings_SingleValue : SessionSettings)
+ 			for (auto& Settings_SingleValue : SessionSettings)
 			{
 				if (Settings_SingleValue.Key.Len() == 0)
 				{
@@ -51,9 +47,9 @@ void USIK_CreateLobby_AsyncFunction::CreateLobby()
 			if(bDelegateCalled == false)
 			{
 				UE_LOG(LogOnline, Warning, TEXT("EIK: SessionPtrRef is null"));
-				OnFail.Broadcast("");
+				OnFail.Broadcast(FSIK_SteamId());
 				SetReadyToDestroy();
-MarkAsGarbage();
+				MarkAsGarbage();
 				bDelegateCalled = true;
 			}
 		}
@@ -63,9 +59,9 @@ MarkAsGarbage();
 		if(bDelegateCalled == false)
 		{
 			UE_LOG(LogOnline, Warning, TEXT("EIK: SubsystemRef is null"));
-			OnFail.Broadcast("");
+			OnFail.Broadcast(FSIK_SteamId());
 			SetReadyToDestroy();
-MarkAsGarbage();
+			MarkAsGarbage();
 			bDelegateCalled = true;
 		}
 	}
@@ -83,11 +79,11 @@ void USIK_CreateLobby_AsyncFunction::OnCreateLobbyCompleted(FName SessionName, b
 				OnSuccess.Broadcast(CurrentSession->SessionInfo.Get()->GetSessionId().ToString());
 				bDelegateCalled = true;
 				SetReadyToDestroy();
-MarkAsGarbage();
+				MarkAsGarbage();
 			}
 			else
 			{
-				OnSuccess.Broadcast("");
+				OnSuccess.Broadcast(FSIK_SteamId());
 				bDelegateCalled = true;
 				SetReadyToDestroy();
 				MarkAsGarbage();
@@ -99,7 +95,7 @@ MarkAsGarbage();
 		if(bDelegateCalled == false)
 		{
 			UE_LOG(LogOnline, Warning, TEXT("EIK: CreateLobby failed and response was false. Check logs for more information."));
-			OnFail.Broadcast("");
+			OnFail.Broadcast(FSIK_SteamId());
 			SetReadyToDestroy();
 			MarkAsGarbage();
 			bDelegateCalled = true;

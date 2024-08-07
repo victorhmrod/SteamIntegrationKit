@@ -61,25 +61,39 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Basic Settings")
 	int32 P2PConnectionTimeout = 120;
 
-	UPROPERTY(EditAnywhere, Category = "One Click Deploy")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	TEnumAsByte<ESIK_BuildConfiguration> BuildConfiguration = ESIK_BuildConfiguration::Development1;
 
-	UPROPERTY(EditAnywhere, Category = "One Click Deploy")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	TArray<FString> MapsToCook;
 
-	UPROPERTY(EditAnywhere, Category = "One Click Deploy")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	TArray<int32> DepotIds;
 
 	//Beta branch name to automatically set live after successful build, none if empty. Note that the 'default' branch can not be set live automatically. That must be done through the App Admin panel.
-	UPROPERTY(EditAnywhere, Category = "One Click Deploy")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	FString BranchName;
 
-	UPROPERTY(EditAnywhere, Category = "Deployer Account Information")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information")
 	FString Username;
 
-	UPROPERTY(EditAnywhere, Category = "Deployer Account Information")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information")
 	FString Password;
 
+	//Valve recommends that this be a build ID, although it is typical to use your AppID (as a string), or a light product name without any extra symbols.
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
+	FString ServerName;
+
+	//Valve recommends that you set this as the full name of your product.
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
+	FString ServerDescription;
+
+	//This is usually the folder name of your game, and cannot contain spaces or symbols. It is not required for this to be a folder name at all, as long as it is a name without spaces or symbols.
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
+	FString ServerGameDir;
+
+	
+	
 
 private:
 #if WITH_EDITOR
